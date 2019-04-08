@@ -18,6 +18,17 @@ static int screen_max_y = SCREEN_MAX_Y;
 module_param(screen_max_x, int, S_IRUGO);
 module_param(screen_max_y, int, S_IRUGO);
 
+// #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
+static void do_gettimeofday(struct timeval *tv)
+{
+	struct timespec64 now;
+
+	ktime_get_real_ts64(&now);
+	tv->tv_sec = now.tv_sec;
+	tv->tv_usec = now.tv_nsec / 1000;
+}
+// #endif
+
 static int chipone_ts_create_input_device(struct i2c_client *client, struct chipone_ts_data *data)
 {
     struct device *dev = &client->dev;
